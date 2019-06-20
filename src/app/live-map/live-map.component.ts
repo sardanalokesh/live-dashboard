@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {from, interval} from 'rxjs';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {from, interval, Observable} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {DevServer} from '../config/server/dev-server';
 import {environment} from '../../environments/environment';
@@ -17,7 +17,7 @@ export enum LiveMapEntity {
   templateUrl: './live-map.component.html',
   styleUrls: ['./live-map.component.scss']
 })
-export class LiveMapComponent implements OnInit {
+export class LiveMapComponent implements OnInit, OnDestroy {
 
   @Input() entity: LiveMapEntity;
 
@@ -34,6 +34,7 @@ export class LiveMapComponent implements OnInit {
     '#CE4041'
   ];
   private MAX_RADIUS = 10;
+  private subscription = new Observable().subscribe();
 
   constructor() {
   }
@@ -51,19 +52,23 @@ export class LiveMapComponent implements OnInit {
 
   }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
   private init() {
     const url = `${environment.restUrl}/${this.entity === LiveMapEntity.METROS ? 'metrosData' : 'statesData'}`;
     const loader = document.getElementById('loader');
 
     const source = interval(5000);
-    source.pipe(
+    this.subscription.add(source.pipe(
       switchMap(val => {
-      return from(fetch(url));
+        return from(fetch(url));
       }),
       switchMap(val => from(val.json()))
     ).subscribe(data => {
-        this.map.getSource('points').setData(data);
-      });
+      this.map.getSource('points').setData(data);
+    }));
 
     this.map.on('sourcedata', event => {
       if (this.map.getSource('points') && this.map.isSourceLoaded('points')) {
@@ -185,7 +190,7 @@ export class LiveMapComponent implements OnInit {
       requestAnimationFrame(this.animateMarkers.bind(this));
 
       this.delta += 1;
-      this.opacity -= ( .9 / this.framesPerSecond );
+      this.opacity -= (.9 / this.framesPerSecond);
 
       if (this.opacity > 0) {
         this.map.setPaintProperty('pointBgLayer', 'circle-radius', [
@@ -208,9 +213,13 @@ export class LiveMapComponent implements OnInit {
   }
 
   private handleResize() {
-    if (!ResizeObserver) { return; }
-    const ro = new ResizeObserver( entries => {
-      if (this.map) { this.map.resize(); }
+    if (!ResizeObserver) {
+      return;
+    }
+    const ro = new ResizeObserver(entries => {
+      if (this.map) {
+        this.map.resize();
+      }
     });
     ro.observe(document.querySelector('#' + this.CONTAINER));
   }

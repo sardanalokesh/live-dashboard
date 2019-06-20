@@ -38,6 +38,10 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.static('app'));
+/*app.use('/', function(req, res) {
+  // Use res.sendfile, as it streams instead of reading the file into memory.
+  res.sendFile(__dirname + '/app/index.html');
+});*/
 
 app.get("/randomPoints", (req, res) => {
     const count = req.query.count || 5000;
@@ -70,6 +74,10 @@ app.get("/zipsData", (req, res) => {
 app.get("/timeSeriesData", (req, res) => {
   const data = timeSeriesData();
   sendData(null, data, res);
+});
+
+app.get("*", (req, res) => {
+  res.redirect('/');
 });
 
 

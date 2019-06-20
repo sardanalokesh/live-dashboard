@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {environment} from '../../environments/environment';
-import {from, interval} from 'rxjs';
+import {from, interval, Observable} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {LiveMapEntity} from '../live-map/live-map.component';
 
@@ -12,23 +12,14 @@ declare var ResizeObserver;
   templateUrl: './zips-map.component.html',
   styleUrls: ['./zips-map.component.scss']
 })
-export class ZipsMapComponent implements OnInit {
+export class ZipsMapComponent implements OnInit, OnDestroy {
 
   @Input() entity: LiveMapEntity;
 
   private map: any;
-  private delta = 0;
-  private framesPerSecond = 10;
-  private opacity = 1;
-  private radius = 0;
   private numberFormatter = new Intl.NumberFormat('en-US');
   private CONTAINER = 'map';
-  private COLORS = [
-    '#22CECF',
-    '#F3A436',
-    '#CE4041'
-  ];
-  private MAX_RADIUS = 10;
+  private subscription = new Observable().subscribe();
 
   constructor() {
   }
@@ -46,19 +37,23 @@ export class ZipsMapComponent implements OnInit {
 
   }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
   private init() {
     const url = `${environment.restUrl}/zipsData?first=true`;
     const loader = document.getElementById('loader');
 
     const source = interval(5000);
-    source.pipe(
+    this.subscription.add(source.pipe(
       switchMap(val => {
         return from(fetch(url));
       }),
       switchMap(val => from(val.json()))
     ).subscribe(data => {
       this.map.getSource('points').setData(data);
-    });
+    }));
 
     this.map.on('sourcedata', event => {
       if (this.map.getSource('points') && this.map.isSourceLoaded('points')) {
@@ -211,9 +206,13 @@ export class ZipsMapComponent implements OnInit {
   }
 
   private handleResize() {
-    if (!ResizeObserver) { return; }
-    const ro = new ResizeObserver( entries => {
-      if (this.map) { this.map.resize(); }
+    if (!ResizeObserver) {
+      return;
+    }
+    const ro = new ResizeObserver(entries => {
+      if (this.map) {
+        this.map.resize();
+      }
     });
     ro.observe(document.querySelector('#' + this.CONTAINER));
   }
