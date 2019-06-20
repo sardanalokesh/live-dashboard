@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {from, interval} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import {Server} from '../config/server';
+import {DevServer} from '../config/server/dev-server';
+import {environment} from '../../environments/environment';
 
 declare var mapboxgl;
 declare var ResizeObserver;
@@ -42,7 +43,7 @@ export class LiveMapComponent implements OnInit {
       container: this.CONTAINER,
       style: 'mapbox://styles/sardanalokesh/cjx333skt03oq1cpbzli1vwug',
       center: [-95.712891, 37.09024],
-      zoom: 2.8
+      zoom: 3.4
     });
 
     this.map.on('load', this.init.bind(this));
@@ -51,7 +52,7 @@ export class LiveMapComponent implements OnInit {
   }
 
   private init() {
-    const url = `${Server.BASE_URL}/${this.entity === LiveMapEntity.METROS ? 'metrosData' : 'statesData'}`;
+    const url = `${environment.restUrl}/${this.entity === LiveMapEntity.METROS ? 'metrosData' : 'statesData'}`;
     const loader = document.getElementById('loader');
 
     const source = interval(5000);
@@ -80,14 +81,14 @@ export class LiveMapComponent implements OnInit {
       source: 'points',
       type: 'circle',
       paint: {
-        'circle-radius': [
+        'circle-radius': 0, /*[
           'interpolate',
           ['linear'],
           ['get', 'visits'],
           0, 0,
           100, 2,
           10000, this.MAX_RADIUS
-        ],
+        ],*/
         'circle-opacity': 0,
         'circle-radius-transition': {duration: 0},
         'circle-opacity-transition': {duration: 0},

@@ -6,7 +6,7 @@ function timeSeriesData() {
   let date = startDate;
   while (date < endDate) {
     data.push({
-      date: date.getTime(),
+      date: date.setHours(0,0,0,0),
       views: Math.round(Math.random() * 10000)
     });
     date.setDate(date.getDate() + 1);

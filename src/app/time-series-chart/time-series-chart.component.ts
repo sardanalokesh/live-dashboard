@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {Server} from '../config/server';
 import * as Highcharts from 'highcharts/highstock';
 import * as theme from 'highcharts/themes/dark-unica';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-time-series-chart',
@@ -10,7 +10,7 @@ import * as theme from 'highcharts/themes/dark-unica';
 })
 export class TimeSeriesChartComponent implements OnInit {
 
-  private dataUrl = `${Server.BASE_URL}/timeSeriesData`;
+  private dataUrl = `${environment.restUrl}/timeSeriesData`;
 
   constructor() { }
 
@@ -28,6 +28,9 @@ export class TimeSeriesChartComponent implements OnInit {
         },
         title: {
           text: ''
+        },
+        tooltip: {
+          xDateFormat: '%B %d, %Y',
         },
         series: [{
           name: 'Views',

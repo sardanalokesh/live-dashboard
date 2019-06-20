@@ -2,6 +2,7 @@ const express = require("express");
 const randomPoints = require("./randomPointsGenerator").randomPoints;
 const statesData = require("./statesData").statesData;
 const metrosData = require("./metrosData").metrosData;
+const zipsData = require("./zipsData").zipsData;
 const timeSeriesData = require("./timeSeriesData").timeSeriesData;
 
 var app = require('express')(); 
@@ -58,6 +59,12 @@ app.get("/metrosData", (req, res) => {
     const first = !!req.query.first || false;
     const data = metrosData(first);
     sendData(null, data, res);
+});
+
+app.get("/zipsData", (req, res) => {
+  const first = !!req.query.first || false;
+  const data = zipsData(first);
+  sendData(null, data, res);
 });
 
 app.get("/timeSeriesData", (req, res) => {

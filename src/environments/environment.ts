@@ -2,8 +2,11 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import {DevServer} from '../app/config/server/dev-server';
+
 export const environment = {
-  production: false
+  production: false,
+  restUrl: DevServer.BASE_URL
 };
 
 /*

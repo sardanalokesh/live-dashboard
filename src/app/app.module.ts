@@ -18,6 +18,7 @@ import { StatesMapComponent } from './states-map/states-map.component';
 import { LiveMapComponent } from './live-map/live-map.component';
 import { FooterComponent } from './footer/footer.component';
 import { TimeSeriesChartComponent } from './time-series-chart/time-series-chart.component';
+import { ZipsMapComponent } from './zips-map/zips-map.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { TimeSeriesChartComponent } from './time-series-chart/time-series-chart.
     StatesMapComponent,
     LiveMapComponent,
     FooterComponent,
-    TimeSeriesChartComponent
+    TimeSeriesChartComponent,
+    ZipsMapComponent
   ],
   imports: [
     BrowserModule,
