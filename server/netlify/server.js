@@ -1,0 +1,101 @@
+const express = require("express");
+const randomPoints = require("../randomPointsGenerator").randomPoints;
+const statesData = require("../statesData").statesData;
+const metrosData = require("../metrosData").metrosData;
+const zipsData = require("../zipsData").zipsData;
+const timeSeriesData = require("../timeSeriesData").timeSeriesData;
+const metrosData2 = require("../metrosData2").metrosData;
+const serverless = require("serverless-http");
+
+var app = require('express')();
+var http = require('http').Server(app);
+var fs = require('fs');
+
+const US_GEOJSON_FILE = "geojson/us-states.geojson";
+const US_GEOJSON = JSON.parse(fs.readFileSync(US_GEOJSON_FILE, "utf-8"));
+
+// Add headers
+app.use(function (req, res, next) {
+
+  /*res.setHeader('Content-Type', 'application/json');*/
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  // Pass to next layer of middleware
+  next();
+});
+
+app.use(express.static('app'));
+/*app.use('/', function(req, res) {
+  // Use res.sendfile, as it streams instead of reading the file into memory.
+  res.sendFile(__dirname + '/app/index.html');
+});*/
+
+app.get("/randomPoints", (req, res) => {
+  const count = req.query.count || 5000;
+  randomPoints(count, US_GEOJSON).then(points => {
+    sendData(null, points, res);
+  }, err => {
+    sendData(err, null, res);
+  });
+
+});
+
+app.get("/statesData", (req, res) => {
+  const first = !!req.query.first || false;
+  const data = statesData(first);
+  sendData(null, data, res);
+});
+
+app.get("/metrosData", (req, res) => {
+  const first = !!req.query.first || false;
+  const data = metrosData(first);
+  sendData(null, data, res);
+});
+
+app.get("/metrosData2", (req, res) => {
+  const first = !!req.query.first || false;
+  const data = metrosData2(first);
+  sendData(null, data, res);
+});
+
+app.get("/zipsData", (req, res) => {
+  const first = !!req.query.first || false;
+  const data = zipsData(first);
+  sendData(null, data, res);
+});
+
+app.get("/timeSeriesData", (req, res) => {
+  const data = timeSeriesData();
+  sendData(null, data, res);
+});
+
+app.get("*", (req, res) => {
+  res.redirect('/');
+});
+
+module.exports.handler = serverless(app);
+
+function sendData(err, data, res) {
+  if (!err) {
+    res.writeHead(200, {
+      'Content-Type': 'application/json'
+    });
+    res.write(JSON.stringify(data));
+    res.send();
+  } else {
+    console.log(err);
+    res.sendStatus(500);
+  }
+}
