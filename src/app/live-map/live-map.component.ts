@@ -149,8 +149,9 @@ export class LiveMapComponent implements OnInit, OnDestroy {
         'text-size': 10
       },
       paint: {
-        'text-halo-color': '#ffffff',
-        'text-halo-width': 1
+        'text-halo-color': '#000',
+        'text-halo-width': 1,
+        'text-color': '#fff'
       }
     });
 

@@ -4,6 +4,7 @@ const statesData = require("./statesData").statesData;
 const metrosData = require("./metrosData").metrosData;
 const zipsData = require("./zipsData").zipsData;
 const timeSeriesData = require("./timeSeriesData").timeSeriesData;
+const metrosData2 = require("./metrosData2").metrosData;
 
 var app = require('express')(); 
 var http = require('http').Server(app);
@@ -63,6 +64,12 @@ app.get("/metrosData", (req, res) => {
     const first = !!req.query.first || false;
     const data = metrosData(first);
     sendData(null, data, res);
+});
+
+app.get("/metrosData2", (req, res) => {
+  const first = !!req.query.first || false;
+  const data = metrosData2(first);
+  sendData(null, data, res);
 });
 
 app.get("/zipsData", (req, res) => {

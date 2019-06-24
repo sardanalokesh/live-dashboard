@@ -14,8 +14,6 @@ declare var ResizeObserver;
 })
 export class ZipsMapComponent implements OnInit, OnDestroy {
 
-  @Input() entity: LiveMapEntity;
-
   private map: any;
   private numberFormatter = new Intl.NumberFormat('en-US');
   private CONTAINER = 'map';

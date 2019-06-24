@@ -19,6 +19,7 @@ import { LiveMapComponent } from './live-map/live-map.component';
 import { FooterComponent } from './footer/footer.component';
 import { TimeSeriesChartComponent } from './time-series-chart/time-series-chart.component';
 import { ZipsMapComponent } from './zips-map/zips-map.component';
+import { MetrosPolygonMapComponent } from './metros-polygon-map/metros-polygon-map.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ZipsMapComponent } from './zips-map/zips-map.component';
     LiveMapComponent,
     FooterComponent,
     TimeSeriesChartComponent,
-    ZipsMapComponent
+    ZipsMapComponent,
+    MetrosPolygonMapComponent
   ],
   imports: [
     BrowserModule,
