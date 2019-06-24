@@ -40,7 +40,7 @@ export class MetrosPolygonMapComponent implements OnInit, OnDestroy {
   }
 
   private init() {
-    const url = `${environment.restUrl}/metrosData2`;
+    const url = `/metrosData2`;
     const loader = document.getElementById('loader');
 
     const source = interval(5000);

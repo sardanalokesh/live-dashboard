@@ -40,7 +40,7 @@ export class ZipsMapComponent implements OnInit, OnDestroy {
   }
 
   private init() {
-    const url = `${environment.restUrl}/zipsData?first=true`;
+    const url = `/zipsData?first=true`;
     const loader = document.getElementById('loader');
 
     const source = interval(5000);

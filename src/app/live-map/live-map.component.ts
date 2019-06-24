@@ -57,7 +57,7 @@ export class LiveMapComponent implements OnInit, OnDestroy {
   }
 
   private init() {
-    const url = `${environment.restUrl}/${this.entity === LiveMapEntity.METROS ? 'metrosData' : 'statesData'}`;
+    const url = `/${this.entity === LiveMapEntity.METROS ? 'metrosData' : 'statesData'}`;
     const loader = document.getElementById('loader');
 
     const source = interval(5000);
